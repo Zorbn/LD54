@@ -110,7 +110,7 @@ public class Guard
     {
         var visionPosition = new Vector2(visionTilePosition.X * TileMap.TileWidth,
             visionTilePosition.Y * TileMap.TileHeight);
-        _camera.Draw(visionPosition, Sprite.DangerMarker.Rectangle, 0f);
+        _camera.Draw(visionPosition, Sprite.DangerMarker.Rectangle, 0.01f);
     }
 
     private void VisionCone(Point start, TileMap tileMap, Action<Point> onTile)

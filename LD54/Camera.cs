@@ -43,7 +43,10 @@ public class Camera
     {
         var depth = position.Y + spriteRectangle.Height;
         position = Vector2.Floor(position * _scale - _offset);
+        // Y sorting is handled in a hacky way, all y sorted depths are in the range 0.25f - .75f to allow for manual
+        // depths of UI elements and background tiles to not interfere with them.
+        depth = overrideDepth ?? Math.Clamp(depth / _windowHeight * 2f + 0.25f, 0f, 1f);
         _spriteBatch.Draw(_atlas, position, spriteRectangle, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None,
-            overrideDepth ?? Math.Clamp(depth / _windowHeight, 0f, 1f));
+            depth);
     }
 }

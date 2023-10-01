@@ -9,7 +9,7 @@ public class Game1 : Game
 {
     private const float MaxFrameTime = 0.1f;
 
-    private static readonly Color BackgroundColor = new(110, 39, 39);
+    private static readonly Color BackgroundColor = new(46, 34, 47);
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;

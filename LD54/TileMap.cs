@@ -26,6 +26,7 @@ public class TileMap
     private const float DoorCloseTime = 10f;
 
     private readonly Tile[] _tiles = new Tile[Length];
+    private readonly Tile[] _backgroundTiles = new Tile[Length];
 
     private readonly List<Direction> _possibleDoorSpawns = new();
 
@@ -38,6 +39,7 @@ public class TileMap
     public void Generate(Player player, Camera camera)
     {
         Array.Clear(_tiles);
+        Array.Fill(_backgroundTiles, Tile.HallwayFloor);
         _guards.Clear();
         _doorsToClose.Clear();
         _closedDoors.Clear();
@@ -70,6 +72,8 @@ public class TileMap
                 var roomStartX = roomX * RoomSize + roomX * HallwaySize;
                 var roomStartY = roomY * RoomSize + roomY * HallwaySize;
                 var isSpawnRoom = roomX == 1 && roomY == 1;
+
+                SetRectangle(roomStartX, roomStartY, RoomSize, RoomSize, Tile.RoomFloor, _backgroundTiles);
 
                 if (isSpawnRoom)
                 {
@@ -191,6 +195,8 @@ public class TileMap
         Tile.Exit => Sprite.Exit,
         Tile.GoldBars => Sprite.GoldBars,
         Tile.SilverCoin => Sprite.SilverCoin,
+        Tile.RoomFloor => Sprite.RoomFloor,
+        Tile.HallwayFloor => Sprite.HallwayFloor,
         _ => throw new ArgumentException($"Tile \"{tile}\" has no corresponding sprite")
     };
 
@@ -212,29 +218,29 @@ public class TileMap
         _ => 0
     };
 
-    public void SetTile(int x, int y, Tile tile)
+    public void SetTile(int x, int y, Tile tile, Tile[]? tiles = null)
     {
         if (x is < 0 or >= Size || y is < 0 or >= Size) return;
 
-        _tiles[x + Size * y] = tile;
+        (tiles ?? _tiles)[x + Size * y] = tile;
     }
 
-    private void SetRectangle(int x, int y, int width, int height, Tile tile)
+    private void SetRectangle(int x, int y, int width, int height, Tile tile, Tile[]? tiles = null)
     {
         for (var ix = x; ix < x + width; ix++)
         {
             for (var iy = y; iy < y + height; iy++)
             {
-                SetTile(ix, iy, tile);
+                SetTile(ix, iy, tile, tiles);
             }
         }
     }
 
-    public Tile GetTile(int x, int y)
+    public Tile GetTile(int x, int y, Tile[]? tiles = null)
     {
         if (x is < 0 or >= Size || y is < 0 or >= Size) return Tile.OfficeWall;
 
-        return _tiles[x + Size * y];
+        return (tiles ?? _tiles)[x + Size * y];
     }
 
     public static Point GetTilePosition(Vector2 position)
@@ -301,6 +307,19 @@ public class TileMap
         foreach (var guard in _guards)
         {
             guard.Draw(this);
+        }
+
+        for (var y = 0; y < Size; y++)
+        {
+            for (var x = 0; x < Size; x++)
+            {
+                var backgroundTile = GetTile(x, y, _backgroundTiles);
+                var sprite = TileToSprite(backgroundTile);
+
+                if (sprite is null) continue;
+
+                camera.Draw(new Vector2(x * TileWidth, y * TileHeight), sprite.Rectangle, 0f);
+            }
         }
 
         for (var y = -1; y < Size + 1; y++)

@@ -56,6 +56,8 @@ public class Sprite
     public static readonly Sprite ExclamationPoint = Sprites["ExclamationPoint"];
     public static readonly Sprite Darkness = Sprites["Darkness"];
     public static readonly Sprite EndScreen = Sprites["EndScreen"];
+    public static readonly Sprite RoomFloor = Sprites["RoomFloor"];
+    public static readonly Sprite HallwayFloor = Sprites["HallwayFloor"];
 
     static Sprite()
     {

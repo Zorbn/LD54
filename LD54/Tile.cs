@@ -10,5 +10,7 @@ public enum Tile
     DoorClosedVertical,
     Exit,
     GoldBars,
-    SilverCoin
+    SilverCoin,
+    RoomFloor,
+    HallwayFloor
 }
